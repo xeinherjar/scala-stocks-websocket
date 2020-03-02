@@ -3,14 +3,52 @@
 }
 
 .stock-input-area {
+  align-items: center;
   background-color: #282c34;
-  min-height: 10vh;
+  color: #fff;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: center;
+  min-height: 10vh;
+}
+
+.stock-input-area input[type=text] {
+  color: #fff;
+  background: transparent;
+  border-style: none;
+  line-height: 3.5rem;
+  flex-grow: 1;
+  font-size: 1.8rem;
+  outline: none;
+  text-transform: uppercase;
+}
+
+::placeholder {
+  font-style: italic;
+  text-transform: none;
+}
+
+.stock-input-area button {
+  background: none;
+  border: 1px solid #9b9da1;
+  color: #9b9da1;
+  line-height: 2.5rem;
+  font-size: 1.5rem;
+  outline: none;
+}
+
+.stock-input-area button:hover {
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid #fff;
+  transition: color .25s;
+}
+
+.stock-input-area button:disabled {
+  border: 1px solid #9b9da1;
+  color: #9b9da1;
+  cursor: not-allowed;
 }
 
 .stock-table {
@@ -26,24 +64,36 @@
   width: 100%;
 }
 
+.stock-table td {
+  width: 33%;
+}
+
+.stock-table th {
+  width: 33%;
+}
+
 .table-header {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  box-sizing: border-box;
   color: #fff;
   background-color: #6c7ae0;
+  box-sizing: border-box;
+  padding-bottom: 15px;
+  padding-top: 15px;
 }
 
 .remove-stock {
-  color: #fff;
-  background-color: #f32013;
-  border-radius: 8px;
-  font-weight: bold;
-  padding: 4px 12px;
+  color: #f32013;
+  display: inline-block;
+  font-family: monospace;
+  font-size: 1.5rem;
+  opacity: 0.5;
+  padding: 0.5rem;
 }
 
 .remove-stock:hover {
   cursor: pointer;
+  opacity: 1;
+  transform: rotate(180deg);
+  transition: all .25s ease-in;
 }
 
 table {

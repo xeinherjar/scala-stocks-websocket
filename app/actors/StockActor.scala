@@ -6,12 +6,11 @@ import akka.actor.typed.{ ActorRef, ActorSystem, Behavior, PostStop, Scheduler }
 import akka.{ Done, NotUsed }
 import akka.stream.scaladsl.{ Flow, Sink, Source }
 
-import play.api.libs.json._
-
 import scala.concurrent.duration._
 import scala.concurrent.{ Future }
 import scala.jdk.CollectionConverters._
 
+import play.api.libs.json._
 import yahoofinance.YahooFinance
 
 object StockActor {
@@ -25,7 +24,6 @@ object StockActor {
   case class Action(action: String, value: String)
 
   def apply(): Behavior[Message] = Behaviors.setup { implicit context => new StockActor().behavior }
-
 }
 
 class StockActor(implicit context: ActorContext[StockActor.Message]) {
@@ -84,6 +82,7 @@ class StockActor(implicit context: ActorContext[StockActor.Message]) {
         val stocks = stockResults.asScala
         .filter{ case (k, v) => v.getQuote().getPrice() != null } // Bad ticker name
         .map{ case (k, v) => Json.toJson[Stock](Stock(k, v.getQuote().getPrice())) }
+
         Json.toJson(stocks) 
       }
     })

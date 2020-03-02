@@ -2,20 +2,24 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [ticker, setTicker] = useState([]);
+  const [ws, setWebSocket] = useState(null);
+  const [symbol, setSymbol] = useState('');
+
+  const onSymbolInput = (event) => {
+    setSymbol(event.target.value);
+  };
+
   const onAddStock = (event) => {
     event.preventDefault();
-    const symbol = event.target.symbol.value;
-
-    setSymbol(symbol);
+    ws.send(JSON.stringify({ action: 'subscribe', value: symbol.toUpperCase() }));
+    setSymbol('');
   };
 
   const onRemoveStock = symbol => {
     ws.send(JSON.stringify({ action: 'unsubscribe', value: symbol }));
   };
 
-  const [ticker, setTicker] = useState([]);
-  const [ws, setWebSocket] = useState(null);
-  const [symbol, setSymbol] = useState(null);
 
   useEffect(() => {
     const webSocket = new WebSocket('ws://localhost:9000/ws');
@@ -36,20 +40,14 @@ function App() {
     };
   }, [])
 
-  useEffect(() => {
-    if (!symbol) { return; }
-    ws.send(JSON.stringify({ action: 'subscribe', value: symbol.toUpperCase() }));
-  }, [symbol]);
-
   return (
     <div className="App">
       <div className="stock-input-area">
         <form onSubmit={onAddStock}>
-          <label>
-            Ticker Symbol:
-            <input type="text" name="symbol" />
-          </label>
-          <input type="submit" value="Watch" disabled={!ws} />
+          <input type="text" name="symbol" placeholder="ticker symbol" value={symbol} onChange={onSymbolInput}/>
+          <button type="submit" value="Watch" disabled={!ws}>
+            <i>Watch</i>
+          </button>
         </form>
       </div>
       <div className="stock-table">
@@ -69,7 +67,7 @@ function App() {
                   <td>
                     <span className="remove-stock"
                       onClick={() => onRemoveStock(v.symbol)}>
-                      X
+                      x
                     </span>
                   </td>
                 </tr>
