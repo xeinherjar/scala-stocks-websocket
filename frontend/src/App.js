@@ -17,12 +17,10 @@ function App() {
   const [ws, setWebSocket] = useState(null);
   const [symbol, setSymbol] = useState(null);
 
-  // essentially componentDidMount
   useEffect(() => {
     const webSocket = new WebSocket('ws://localhost:9000/ws');
 
     webSocket.onopen = event => {
-      console.log('connected!', webSocket);
       webSocket.send(JSON.stringify({ action: 'subscribe', value: 'AAPL' }));
       setWebSocket(webSocket);
     }
@@ -30,8 +28,7 @@ function App() {
     webSocket.onmessage = event => {
       const data = JSON.parse(event.data);
 
-      setTicker(data);
-      console.log('set ticker:', data);
+      setTicker(data.sort((stock1, stock2) => stock1.symbol > stock2.symbol ? 1 : -1));
     };
 
     return () => {
@@ -40,10 +37,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log('symbol', symbol);
     if (!symbol) { return; }
-    ws.send(JSON.stringify({ action: 'subscribe', value: symbol }));
-    console.log('sent symbol', symbol);
+    ws.send(JSON.stringify({ action: 'subscribe', value: symbol.toUpperCase() }));
   }, [symbol]);
 
   return (
@@ -54,15 +49,16 @@ function App() {
             Ticker Symbol:
             <input type="text" name="symbol" />
           </label>
-          <input type="submit" value="Watch" />
+          <input type="submit" value="Watch" disabled={!ws} />
         </form>
       </div>
       <div className="stock-table">
         <table>
           <thead>
-            <tr>
+            <tr className="table-header">
               <th>Symbol</th>
               <th>Price</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -70,7 +66,12 @@ function App() {
                 <tr key={v.symbol}>
                   <td>{v.symbol}</td>
                   <td>{v.price}</td>
-                  <td onClick={() => onRemoveStock(v.symbol)}>-X-</td>
+                  <td>
+                    <span className="remove-stock"
+                      onClick={() => onRemoveStock(v.symbol)}>
+                      X
+                    </span>
+                  </td>
                 </tr>
             )) }
           </tbody>
